@@ -13,7 +13,7 @@ import vn.aicf.mobile.web.dto.CatalogDtos.ProductResponse;
  * API MÓN: kế thừa 5 API CRUD từ {@link CrudController}.
  * Lọc danh sách bằng tham số: GET /api/products?categoryId=1&q=sữa&available=true
  */
-@Tag(name = "4. Món")
+@Tag(name = "04. Món")
 @RestController
 @RequestMapping("/api/products")
 public class ProductController extends CrudController<ProductRequest, ProductResponse> {

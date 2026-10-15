@@ -40,7 +40,7 @@ import java.util.List;
  * </pre>
  * PATCH (sửa một phần) dùng cho thao tác chỉ đổi 1-2 trường của đơn, khác PUT (thay toàn bộ).
  */
-@Tag(name = "6. Đơn hàng")
+@Tag(name = "06. Đơn hàng")
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {

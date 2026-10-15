@@ -13,7 +13,7 @@ import vn.aicf.mobile.web.dto.CatalogDtos.CategoryResponse;
  * API DANH MỤC: GET/POST /api/categories, GET/PUT/DELETE /api/categories/{id}.
  * Toàn bộ 5 API được KẾ THỪA từ {@link CrudController} - lớp này chỉ khai báo đường dẫn và service.
  */
-@Tag(name = "3. Danh mục")
+@Tag(name = "03. Danh mục")
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryController extends CrudController<CategoryRequest, CategoryResponse> {

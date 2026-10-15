@@ -30,7 +30,7 @@ import java.util.List;
  *   DELETE /api/chat           xóa lịch sử
  * </pre>
  */
-@Tag(name = "8. Chat AI")
+@Tag(name = "08. Chat AI")
 @RestController
 @RequestMapping("/api/chat")
 public class ChatController {

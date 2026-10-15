@@ -31,7 +31,7 @@ import java.util.List;
  * </pre>
  * {@code @AuthenticationPrincipal AuthUser me}: Spring đưa vào người dùng đang đăng nhập (do JwtAuthFilter xác định).
  */
-@Tag(name = "2. Người dùng")
+@Tag(name = "02. Người dùng")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {

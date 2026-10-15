@@ -32,7 +32,7 @@ import java.util.Map;
  *   DELETE /api/devices?token=...             xóa mã khi đăng xuất
  * </pre>
  */
-@Tag(name = "7. Thông báo & FCM")
+@Tag(name = "07. Thông báo & FCM")
 @RestController
 public class NotificationController {
 

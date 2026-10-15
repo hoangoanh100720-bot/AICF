@@ -24,7 +24,7 @@ import vn.aicf.mobile.web.dto.AuthDtos.RegisterRequest;
  * </pre>
  * Controller chỉ nhận request, kiểm tra dữ liệu (@Valid) rồi giao cho Service - không chứa nghiệp vụ.
  */
-@Tag(name = "1. Xác thực")
+@Tag(name = "01. Xác thực")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

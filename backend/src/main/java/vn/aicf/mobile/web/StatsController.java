@@ -13,7 +13,7 @@ import vn.aicf.mobile.web.dto.StatsDtos.Dashboard;
 import java.time.LocalDate;
 
 /** API THỐNG KÊ (ADMIN): GET /api/stats/dashboard?date=YYYY-MM-DD (mặc định hôm nay). */
-@Tag(name = "9. Thống kê")
+@Tag(name = "09. Thống kê")
 @RestController
 @RequestMapping("/api/stats")
 public class StatsController {
