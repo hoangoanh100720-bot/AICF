@@ -1,0 +1,6 @@
+# File .cmd/.bat của Windows phải giữ xuống dòng CRLF
+*.cmd text eol=crlf
+*.bat text eol=crlf
+# Script shell (mvnw, gradlew) giữ LF
+mvnw text eol=lf
+gradlew text eol=lf

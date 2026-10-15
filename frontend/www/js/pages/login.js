@@ -93,7 +93,7 @@ export function render() {
       'Tài khoản thử: khach / khach123 · staff / staff123 · admin / admin123'));
 }
 
-/** App Android: chỉnh địa chỉ máy chủ (máy ảo: http://10.0.2.2:8080, điện thoại thật: IP máy tính trong cùng Wi-Fi). */
+/** App Android: chỉnh địa chỉ máy chủ (máy ảo: http://10.0.2.2:8090, điện thoại thật: IP máy tính trong cùng Wi-Fi). */
 function serverSettings() {
   const input = h('input', { class: 'input', id: 'server-url', type: 'url', value: session.serverUrl(), inputmode: 'url' });
   const check = h('button', {
@@ -113,5 +113,5 @@ function serverSettings() {
     h('div', { class: 'field', style: { marginTop: 'var(--space-3)' } },
       h('label', { for: 'server-url' }, 'URL máy chủ'),
       h('div', { class: 'row' }, input, check),
-      h('span', { class: 'hint' }, 'Máy ảo Android: http://10.0.2.2:8080 · Điện thoại thật: http://<IP máy tính>:8080')));
+      h('span', { class: 'hint' }, 'Máy ảo Android: http://10.0.2.2:8090 · Điện thoại thật: http://<IP máy tính>:8090')));
 }

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Tài liệu REST API tự sinh (OpenAPI 3) + Swagger UI tại http://localhost:8080/swagger-ui.html.
+ * Tài liệu REST API tự sinh (OpenAPI 3) + Swagger UI tại http://localhost:8090/swagger-ui.html.
  * Bấm nút "Authorize", dán token lấy từ /api/auth/login là gọi thử được các API cần đăng nhập.
  */
 @Configuration

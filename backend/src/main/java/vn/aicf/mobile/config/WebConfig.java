@@ -12,7 +12,7 @@ import java.nio.file.Path;
 
 /**
  * Cho backend phục vụ luôn giao diện PWA trong thư mục frontend/www.
- * Lợi ích: mở http://localhost:8080 trên trình duyệt / điện thoại cùng mạng là dùng được app,
+ * Lợi ích: mở http://localhost:8090 trên trình duyệt / điện thoại cùng mạng là dùng được app,
  * và PWA gọi API CÙNG NGUỒN nên không vướng CORS. (App Android vẫn có bản sao giao diện riêng bên trong.)
  */
 @Slf4j

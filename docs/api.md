@@ -1,6 +1,6 @@
 # REST API
 
-- Địa chỉ gốc: `http://localhost:8080`. Tài liệu tương tác (Swagger UI): `/swagger-ui.html`, đặc tả OpenAPI: `/v3/api-docs`.
+- Địa chỉ gốc: `http://localhost:8090`. Tài liệu tương tác (Swagger UI): `/swagger-ui.html`, đặc tả OpenAPI: `/v3/api-docs`.
 - Dữ liệu vào/ra: JSON (UTF-8). Ngày giờ dạng ISO `2026-10-15T09:30:00`.
 - Xác thực: gửi header `Authorization: Bearer <token>` (token lấy từ `/api/auth/login`, `/register` hoặc `/firebase`, hạn 72 giờ).
 - Ký hiệu quyền: 🌐 mọi người · 🔑 đã đăng nhập · 👷 STAFF hoặc ADMIN · 👑 ADMIN.
@@ -40,7 +40,7 @@ Lỗi luôn cùng 1 dạng:
 | 🌐 | `POST /api/auth/firebase` | `{idToken}` (Firebase ID token sau khi đăng nhập Google) → `{token, expiresAt, user}` |
 
 ```bash
-curl -X POST http://localhost:8080/api/auth/login -H "Content-Type: application/json" \
+curl -X POST http://localhost:8090/api/auth/login -H "Content-Type: application/json" \
      -d "{\"username\":\"khach\",\"password\":\"khach123\"}"
 ```
 

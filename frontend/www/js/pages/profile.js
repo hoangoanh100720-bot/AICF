@@ -64,7 +64,7 @@ export function render(ctx) {
 
   const changeServer = () => formSheet({
     title: 'Địa chỉ máy chủ',
-    fields: [{ name: 'url', label: 'URL máy chủ', type: 'url', required: true, hint: 'vd http://192.168.1.10:8080' }],
+    fields: [{ name: 'url', label: 'URL máy chủ', type: 'url', required: true, hint: 'vd http://192.168.1.10:8090' }],
     initial: { url: session.serverUrl() },
     onSubmit: async ({ url }) => {
       await session.setServerUrl(url);

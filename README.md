@@ -61,8 +61,8 @@ Lần đầu Maven tải thư viện mất 1–3 phút. Khi thấy `Started Mobi
 
 | Mở | Để làm gì |
 |---|---|
-| <http://localhost:8080> | **App (PWA)**. Trên Chrome máy tính: F12 → bật chế độ điện thoại (Ctrl+Shift+M) cho giống app |
-| <http://localhost:8080/swagger-ui.html> | **Tài liệu REST API** tự sinh, gọi thử từng API (bấm *Authorize*, dán token) |
+| <http://localhost:8090> | **App (PWA)**. Trên Chrome máy tính: F12 → bật chế độ điện thoại (Ctrl+Shift+M) cho giống app |
+| <http://localhost:8090/swagger-ui.html> | **Tài liệu REST API** tự sinh, gọi thử từng API (bấm *Authorize*, dán token) |
 | `backend/data/aicf-mobile.db` | **File SQLite** – mở bằng [DB Browser for SQLite](https://sqlitebrowser.org/) để xem bảng |
 
 Tài khoản mẫu (tạo tự động lần đầu):
@@ -73,7 +73,7 @@ Tài khoản mẫu (tạo tự động lần đầu):
 | `staff` | `staff123` | Nhân viên | Bảng đơn cần làm, Thực đơn, Trợ lý AI |
 | `admin` | `admin123` | Quản trị | Tổng quan doanh thu, Đơn hàng, Quản lý món/danh mục/bàn, Người dùng, Cài đặt AI |
 
-**Dùng trên điện thoại thật (PWA):** điện thoại và máy tính cùng Wi-Fi → mở `http://<IP máy tính>:8080`.
+**Dùng trên điện thoại thật (PWA):** điện thoại và máy tính cùng Wi-Fi → mở `http://<IP máy tính>:8090`.
 (Muốn cài PWA lên màn hình chính và nhận Web Push cần HTTPS; với `localhost` trên máy tính thì Chrome cho phép sẵn.)
 
 ### Kịch bản demo gợi ý
@@ -101,7 +101,7 @@ npx cap open android      (mở Android Studio → Run)
 cd android && gradlew.bat assembleDebug
 ```
 
-- **Địa chỉ máy chủ:** app trên máy ảo mặc định gọi `http://10.0.2.2:8080` (= máy tính chạy máy ảo). Điện thoại thật: ở màn Đăng nhập mở *Địa chỉ máy chủ* → nhập `http://<IP máy tính>:8080` → *Kiểm tra*.
+- **Địa chỉ máy chủ:** app trên máy ảo mặc định gọi `http://10.0.2.2:8090` (= máy tính chạy máy ảo). Điện thoại thật: ở màn Đăng nhập mở *Địa chỉ máy chủ* → nhập `http://<IP máy tính>:8090` → *Kiểm tra*.
 - **SQLite trên điện thoại:** plugin `@capacitor-community/sqlite`, CSDL `aicf_local` gồm 3 bảng `kv`, `cart_items`, `cached_products` (xem `frontend/www/js/data/local-db.js`). Trên trình duyệt (PWA) không có SQLite nên dùng localStorage với cùng giao diện hàm.
 - Plugin dùng: `@capacitor-community/sqlite`, `@capacitor/push-notifications`, `@capacitor/app` (nút Back cứng).
 
@@ -171,7 +171,7 @@ Controller (web)  →  Service  →  Repository  →  Entity  ⇄  SQLite
 | Lệnh | Kiểm tra |
 |---|---|
 | `cd backend && run.cmd test` | 6 bài kiểm thử tích hợp (JUnit + MockMvc trên SQLite thật): bảo mật, luồng đơn hàng đầy đủ, luật trạng thái, ràng buộc dữ liệu, CRUD, chat |
-| `cd frontend && node tests/e2e.mjs http://localhost:8080` | 34 bước kiểm thử giao diện trên Chrome ẩn (cỡ màn hình điện thoại), chụp ảnh từng màn vào `tests/ket-qua/` – dùng làm hình minh họa báo cáo |
+| `cd frontend && node tests/e2e.mjs http://localhost:8090` | 34 bước kiểm thử giao diện trên Chrome ẩn (cỡ màn hình điện thoại), chụp ảnh từng màn vào `tests/ket-qua/` – dùng làm hình minh họa báo cáo |
 
 ---
 

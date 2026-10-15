@@ -7,13 +7,13 @@
 // Mỗi bước chụp ảnh màn hình vào thư mục kết quả để đưa vào báo cáo.
 //
 // Chạy (backend đang chạy với dữ liệu mẫu):
-//   node tests/e2e.mjs [http://localhost:8080] [thu-muc-anh]
+//   node tests/e2e.mjs [http://localhost:8090] [thu-muc-anh]
 // =============================================================================
 import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const BASE = process.argv[2] || 'http://localhost:8080';
+const BASE = process.argv[2] || 'http://localhost:8090';
 const OUT = process.argv[3] || 'tests/ket-qua';
 const CHROME = process.env.CHROME || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

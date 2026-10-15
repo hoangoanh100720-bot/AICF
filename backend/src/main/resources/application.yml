@@ -5,7 +5,7 @@
 # =============================================================================
 
 server:
-  port: ${PORT:8080}
+  port: ${PORT:8090}
   # Trả lỗi dạng JSON gọn, không lộ stacktrace ra ngoài
   error:
     include-stacktrace: never
@@ -59,7 +59,7 @@ spring:
       write-dates-as-timestamps: false
     time-zone: Asia/Ho_Chi_Minh
 
-# Swagger UI: http://localhost:8080/swagger-ui.html
+# Swagger UI: http://localhost:8090/swagger-ui.html
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
@@ -73,7 +73,7 @@ app:
   # Thư mục chứa file SQLite, khóa JWT, file Firebase...
   data-dir: ${APP_DATA_DIR:./data}
 
-  # Thư mục giao diện PWA để backend phục vụ luôn (mở http://localhost:8080 là dùng được app).
+  # Thư mục giao diện PWA để backend phục vụ luôn (mở http://localhost:8090 là dùng được app).
   # Để trống nếu chỉ muốn chạy REST API.
   frontend-dir: ${APP_FRONTEND_DIR:../frontend/www}
 
@@ -83,7 +83,7 @@ app:
     ttl-hours: 72
 
   # Các địa chỉ được gọi API từ trình duyệt khác nguồn (app Capacitor chạy ở http://localhost)
-  cors-origins: ${APP_CORS_ORIGINS:http://localhost,https://localhost,capacitor://localhost,http://localhost:8080,http://127.0.0.1:8080}
+  cors-origins: ${APP_CORS_ORIGINS:http://localhost,https://localhost,capacitor://localhost,http://localhost:8090,http://127.0.0.1:8090}
 
   firebase:
     # File "service account" tải từ Firebase Console > Project settings > Service accounts.
