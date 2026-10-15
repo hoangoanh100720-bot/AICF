@@ -1,0 +1,49 @@
+<!doctype html>
+<!--
+  KHUNG APP (App Shell) - AICF Coffee Mobile
+  Chỉ có 1 trang HTML (Single Page App): thanh tiêu đề + vùng nội dung #view + thanh tab dưới.
+  Router (js/core/router.js) đổi nội dung #view theo địa chỉ sau dấu # (vd. #/menu, #/orders/12)
+  mà không tải lại trang -> chuyển màn hình nhanh như app gốc.
+  Cùng 1 bộ giao diện này chạy được:
+    - trên trình duyệt / cài lên màn hình chính như app (PWA, nhờ manifest + service worker)
+    - đóng gói thành app Android bằng Capacitor (thư mục ../android)
+-->
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#5a3417" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1a1411" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="Đặt món, theo dõi đơn và trò chuyện với Trợ lý AI của quán cà phê AICF">
+  <title>AICF Coffee</title>
+
+  <!-- PWA: thông tin cài đặt app (tên, biểu tượng, màu) -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <header class="app-header">
+    <img class="brand-dot" src="icons/icon-192.png" alt="">
+    <h1 id="page-title">AICF Coffee</h1>
+    <div id="header-actions" class="row"></div>
+  </header>
+
+  <!-- Nội dung từng màn hình được vẽ vào đây. aria-live để trình đọc màn hình biết khi đổi màn -->
+  <main id="view" class="app-main" aria-live="polite"></main>
+
+  <!-- Thanh tab dưới: các mục thay đổi theo vai trò (khách / nhân viên / quản trị), xem js/app.js -->
+  <nav id="tabbar" class="tabbar" aria-label="Điều hướng chính" hidden></nav>
+
+  <!-- Vùng hiện toast (thông báo nổi) -->
+  <div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+
+  <noscript>Ứng dụng cần bật JavaScript.</noscript>
+
+  <!-- type="module": dùng import/export chuẩn ES, không cần công cụ build -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

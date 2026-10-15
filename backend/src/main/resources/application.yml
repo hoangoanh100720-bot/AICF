@@ -1,0 +1,106 @@
+# =============================================================================
+# CẤU HÌNH BACKEND
+# Mọi giá trị dạng ${TEN:mac_dinh} đều đổi được bằng biến môi trường, ví dụ:
+#   set GEMINI_API_KEY=xxxx   (Windows)   rồi chạy run.cmd
+# =============================================================================
+
+server:
+  port: ${PORT:8080}
+  # Trả lỗi dạng JSON gọn, không lộ stacktrace ra ngoài
+  error:
+    include-stacktrace: never
+
+spring:
+  application:
+    name: aicf-mobile-backend
+
+  # ---------------------------------------------------------------------------
+  # CƠ SỞ DỮ LIỆU SQLITE
+  # Toàn bộ dữ liệu nằm trong 1 file: ${app.data-dir}/aicf-mobile.db
+  # Có thể mở file này bằng "DB Browser for SQLite" để xem bảng khi báo cáo.
+  # Tham số trên URL là PRAGMA của SQLite:
+  #   foreign_keys=true   bật kiểm tra khóa ngoại (SQLite mặc định TẮT)
+  #   journal_mode=WAL    cho phép vừa đọc vừa ghi cùng lúc, nhanh hơn
+  #   busy_timeout=5000   đang có người ghi thì chờ tối đa 5 giây thay vì báo lỗi ngay
+  # ---------------------------------------------------------------------------
+  datasource:
+    url: jdbc:sqlite:${app.data-dir}/aicf-mobile.db?foreign_keys=true&journal_mode=WAL&busy_timeout=5000
+    driver-class-name: org.sqlite.JDBC
+    hikari:
+      # SQLite chỉ cho 1 luồng ghi tại 1 thời điểm -> giữ ít kết nối là đủ
+      maximum-pool-size: 4
+
+  jpa:
+    # Dialect cho Hibernate biết cú pháp SQL của SQLite
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      # Bảng do file db/schema.sql tạo (có chú thích từng cột), Hibernate KHÔNG tự sửa bảng
+      ddl-auto: none
+    # Không giữ kết nối CSDL suốt request (tránh khóa SQLite khi gọi AI lâu)
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+
+  # Chạy schema.sql (tạo bảng nếu chưa có) và data.sql (dữ liệu mẫu nếu bảng còn trống) mỗi lần khởi động
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/schema.sql
+      data-locations: classpath:db/data.sql
+      encoding: UTF-8
+      # data.sql/schema.sql dùng dấu ";" kết thúc câu lệnh, chú thích bằng "--"
+      continue-on-error: false
+
+  jackson:
+    # Ngày giờ trả về dạng chuỗi ISO "2026-10-15T09:30:00" thay vì mảng số
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: Asia/Ho_Chi_Minh
+
+# Swagger UI: http://localhost:8080/swagger-ui.html
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+
+# =============================================================================
+# CẤU HÌNH RIÊNG CỦA ỨNG DỤNG (đọc qua lớp AppProperties)
+# =============================================================================
+app:
+  # Thư mục chứa file SQLite, khóa JWT, file Firebase...
+  data-dir: ${APP_DATA_DIR:./data}
+
+  # Thư mục giao diện PWA để backend phục vụ luôn (mở http://localhost:8080 là dùng được app).
+  # Để trống nếu chỉ muốn chạy REST API.
+  frontend-dir: ${APP_FRONTEND_DIR:../frontend/www}
+
+  jwt:
+    # Để trống: tự sinh khóa ngẫu nhiên và lưu vào data/jwt.secret
+    secret: ${APP_JWT_SECRET:}
+    ttl-hours: 72
+
+  # Các địa chỉ được gọi API từ trình duyệt khác nguồn (app Capacitor chạy ở http://localhost)
+  cors-origins: ${APP_CORS_ORIGINS:http://localhost,https://localhost,capacitor://localhost,http://localhost:8080,http://127.0.0.1:8080}
+
+  firebase:
+    # File "service account" tải từ Firebase Console > Project settings > Service accounts.
+    # Không có file -> app vẫn chạy, chỉ tắt đăng nhập Google và thông báo đẩy.
+    credentials-file: ${FIREBASE_CREDENTIALS:${app.data-dir}/firebase-service-account.json}
+
+  ai:
+    # Dịch vụ AI dùng cho chat: "gemini" hoặc "claude". Không có khóa API -> chạy "chế độ cơ bản" (trả lời theo luật)
+    provider: ${AI_PROVIDER:gemini}
+    gemini-api-key: ${GEMINI_API_KEY:}
+    gemini-model: ${GEMINI_MODEL:gemini-3.6-flash}
+    claude-api-key: ${ANTHROPIC_API_KEY:}
+    claude-model: ${CLAUDE_MODEL:claude-opus-5-5}
+
+  # Tạo sẵn tài khoản mẫu lần đầu chạy (admin/admin123, staff/staff123, khach/khach123)
+  seed-demo-users: ${APP_SEED_DEMO:true}
+
+logging:
+  level:
+    vn.aicf.mobile: INFO

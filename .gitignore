@@ -1,0 +1,17 @@
+# Backend: thư mục build và dữ liệu chạy (file SQLite, khóa JWT, khóa Firebase - KHÔNG đưa lên Git)
+backend/target/
+backend/data/
+*.db
+*.db-shm
+*.db-wal
+firebase-service-account.json
+
+# Frontend
+frontend/node_modules/
+frontend/tests/ket-qua/
+frontend/android/app/google-services.json
+
+# IDE
+.idea/
+.vscode/
+*.iml

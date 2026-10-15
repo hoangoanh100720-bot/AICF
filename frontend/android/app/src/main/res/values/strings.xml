@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AICF Coffee</string>
+    <string name="title_activity_main">AICF Coffee</string>
+    <string name="package_name">vn.aicf.mobile</string>
+    <string name="custom_url_scheme">vn.aicf.mobile</string>
+</resources>

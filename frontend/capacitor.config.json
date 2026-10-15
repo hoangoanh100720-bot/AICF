@@ -1,0 +1,20 @@
+{
+  "appId": "vn.aicf.mobile",
+  "appName": "AICF Coffee",
+  "webDir": "www",
+  "backgroundColor": "#f8f3ec",
+  "server": {
+    "androidScheme": "http"
+  },
+  "android": {
+    "allowMixedContent": true
+  },
+  "plugins": {
+    "CapacitorSQLite": {
+      "androidIsEncryption": false
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    }
+  }
+}
