@@ -5,7 +5,8 @@
  *   { path: '/orders/:id', title: 'Chi tiết đơn', load: () => import('../pages/orders.js'), export: 'renderDetail',
  *     auth: true, roles: ['CUSTOMER'] }
  * - load: import() ĐỘNG -> chỉ tải code của màn hình khi mở tới (app khởi động nhanh hơn)
- * - auth: cần đăng nhập; roles: chỉ các vai trò này được vào (không khai báo = mọi vai trò)
+ * - auth: cần đăng nhập (chưa đăng nhập -> chuyển tới /login?next=<màn đang mở>);
+ *   roles: chỉ các vai trò này được vào (không khai báo = mọi vai trò)
  *
  * Mỗi trang là 1 hàm render(ctx) trả về phần tử DOM (hoặc Promise). ctx gồm:
  *   params  : tham số trên đường dẫn, vd { id: '12' }
@@ -55,7 +56,8 @@ export class Router {
     // Không có route / vào "/" / chưa đăng nhập / sai vai trò -> chuyển hướng
     if (!match || rawPath === '/') return this.go(this.homeFor(user));
     const { route } = match;
-    if (route.auth && !user) return this.go('/login');
+    // Màn cần đăng nhập: đưa sang Đăng nhập, kèm ?next= để đăng nhập xong quay lại đúng màn đang muốn mở
+    if (route.auth && !user) return this.go('/login?next=' + encodeURIComponent(rawPath));
     if (route.guestOnly && user) return this.go(this.homeFor(user));
     if (route.roles && user && !route.roles.includes(user.role)) return this.go(this.homeFor(user));
 

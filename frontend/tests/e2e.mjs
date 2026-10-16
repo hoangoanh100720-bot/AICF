@@ -78,29 +78,18 @@ const uiLogout = async () => {
   await sleep(700);
   await clickText('dialog .btn', 'Đăng xuất');
   await sleep(1500);
-  ok('Đăng xuất -> về màn Đăng nhập', (await ev('location.hash')) === '#/login');
+  ok('Đăng xuất -> về Thực đơn (chế độ khách vãng lai)', (await ev('location.hash')) === '#/menu');
 };
 
 // =============================== KỊCH BẢN ===============================
+// --- KHÁCH VÃNG LAI: không cần đăng nhập vẫn xem thực đơn và bỏ món vào giỏ ---
 await cdp('Page.navigate', { url: BASE + '/' });
 await sleep(2500);
-ok('Chưa đăng nhập -> chuyển tới màn Đăng nhập', (await ev('location.hash')) === '#/login');
-await shot('dang-nhap');
-
-// Sai mật khẩu
-await fill('input[name=username]', 'khach');
-await fill('input[name=password]', 'sai-mat-khau');
-await ev(`document.querySelector('form button[type=submit]').click(); true`);
-await sleep(1200);
-ok('Sai mật khẩu -> báo lỗi', (await text()).includes('Sai tên đăng nhập hoặc mật khẩu'));
-
-// --- KHÁCH ---
-await uiLogin('khach', 'khach123');
-ok('Khách đăng nhập -> vào Thực đơn', (await ev('location.hash')) === '#/menu');
-ok('Thanh tab của khách có Giỏ hàng', await ev(`!!document.querySelector('.tab[href="#/cart"]')`));
+ok('Mở app chưa đăng nhập -> vào thẳng Thực đơn', (await ev('location.hash')) === '#/menu');
+ok('Thanh tab khách vãng lai có Giỏ hàng + Đăng nhập', await ev(`!!document.querySelector('.tab[href="#/cart"]') && !!document.querySelector('.tab[href="#/login"]')`));
 const productCount = await ev(`document.querySelectorAll('.product').length`);
-ok('Hiện danh sách món', productCount >= 10, productCount);
-await shot('thuc-don');
+ok('Hiện danh sách món (không cần đăng nhập)', productCount >= 10, productCount);
+await shot('thuc-don-khach-vang-lai');
 
 await fill('#menu-search', 'latte');
 await sleep(300);
@@ -113,12 +102,12 @@ ok('Lọc danh mục Trà', (await ev(`[...document.querySelectorAll('.product .
 await clickText('.chip', 'Tất cả');
 await sleep(300);
 
-// Thêm 2 ly "Cà phê sữa đá" + 1 Latte
+// Thêm 2 ly "Cà phê sữa đá" + 1 Latte khi CHƯA đăng nhập
 const addByName = (n) => ev(`(() => { const c = [...document.querySelectorAll('.product')].find(p => p.querySelector('.name').textContent === ${JSON.stringify(n)}); c.querySelector('.add-btn').click(); return true; })()`);
 await addByName('Cà phê sữa đá'); await sleep(500);
 await addByName('Cà phê sữa đá'); await sleep(500);
 await addByName('Latte'); await sleep(800);
-ok('Huy hiệu giỏ = 3', (await ev(`document.querySelector('.tab[href="#/cart"] .badge')?.textContent`)) === '3');
+ok('Khách vãng lai thêm được món: huy hiệu giỏ = 3', (await ev(`document.querySelector('.tab[href="#/cart"] .badge')?.textContent`)) === '3');
 ok('Hiện nút giỏ hàng nổi', await ev(`!document.querySelector('.cart-fab').hidden`));
 await shot('them-vao-gio');
 
@@ -127,7 +116,34 @@ await cdp('Page.reload');
 await sleep(2500);
 ok('Giỏ hàng vẫn còn sau khi tải lại app (LocalDb)', (await ev(`document.querySelector('.tab[href="#/cart"] .badge')?.textContent`)) === '3');
 
+// Xem mục cần tài khoản -> được đưa sang Đăng nhập
+await go('/orders', 1500);
+ok('Khách vãng lai mở Đơn hàng -> chuyển sang Đăng nhập', (await ev('location.hash')).startsWith('#/login?next='));
+
+// Giỏ hàng -> bấm đặt -> phải đăng nhập
 await go('/cart', 1500);
+ok('Nút đặt hiện "Đăng nhập để đặt món"', (await text()).includes('Đăng nhập để đặt món'));
+await ev(`document.querySelector('form button[type=submit]').click(); true`);
+await sleep(1500);
+ok('Bấm đặt khi chưa đăng nhập -> màn Đăng nhập (?next=/cart)', (await ev('location.hash')) === '#/login?next=/cart');
+ok('Màn Đăng nhập giải thích lý do + giỏ vẫn giữ', (await text()).includes('Giỏ hàng của bạn vẫn được giữ nguyên'));
+await shot('dang-nhap-de-dat-mon');
+
+// Sai mật khẩu
+await fill('input[name=username]', 'khach');
+await fill('input[name=password]', 'sai-mat-khau');
+await ev(`document.querySelector('form button[type=submit]').click(); true`);
+await sleep(1200);
+ok('Sai mật khẩu -> báo lỗi', (await text()).includes('Sai tên đăng nhập hoặc mật khẩu'));
+
+// Đăng nhập đúng -> quay lại giỏ, món còn nguyên
+await fill('input[name=password]', 'khach123');
+await ev(`document.querySelector('form button[type=submit]').click(); true`);
+await sleep(2500);
+ok('Đăng nhập xong -> quay lại Giỏ hàng', (await ev('location.hash')) === '#/cart');
+ok('Thanh tab chuyển sang tab của khách (Đơn hàng, Tài khoản)', await ev(`!!document.querySelector('.tab[href="#/orders"]') && !!document.querySelector('.tab[href="#/profile"]')`));
+ok('Giỏ còn đủ 3 món sau khi đăng nhập', (await ev(`document.querySelector('.tab[href="#/cart"] .badge')?.textContent`)) === '3');
+
 await shot('gio-hang');
 await ev(`document.querySelector('#table').value = document.querySelector('#table option:nth-child(3)').value; true`);
 await fill('#order-note', 'Mang ra giúp mình nhé');

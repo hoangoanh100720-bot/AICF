@@ -3,6 +3,8 @@
  *  - Đăng nhập bằng tên + mật khẩu  -> POST /api/auth/login
  *  - Đăng ký tài khoản khách          -> POST /api/auth/register
  *  - Đăng nhập Google (Firebase)      -> Firebase Auth -> POST /api/auth/firebase
+ *  - Khách vãng lai được đưa tới đây khi bấm "Đặt món" / xem đơn / chat: tham số ?next=/cart cho biết
+ *    đăng nhập xong phải quay lại đâu (giỏ hàng vẫn còn nguyên vì lưu trong máy).
  *  - App Android: nhập địa chỉ máy chủ, bấm "Kiểm tra" gọi GET /api/health
  */
 import { IS_NATIVE } from '../config.js';
@@ -11,7 +13,8 @@ import { navigate } from '../core/router.js';
 import { authRepo, settingsRepo } from '../data/repositories.js';
 import { session } from '../data/session.js';
 import { canUseGoogleSignIn, googleSignIn } from '../firebase/firebase.js';
-import { field, readForm, setHeader, showFieldErrors, toast, toastError } from '../ui/components.js';
+import { field, iconButton, readForm, setHeader, showFieldErrors, toast, toastError } from '../ui/components.js';
+import { icons } from '../ui/icons.js';
 
 const LOGIN_FIELDS = [
   { name: 'username', label: 'Tên đăng nhập', required: true, autocomplete: 'username' },
@@ -26,17 +29,29 @@ const REGISTER_FIELDS = [
   { name: 'phone', label: 'Số điện thoại', type: 'tel', autocomplete: 'tel' },
 ];
 
-export function render() {
-  setHeader('Chào mừng');
+export function render(ctx) {
+  // Chỉ nhận đường dẫn nội bộ của app (bắt đầu bằng "/") để tránh bị chèn địa chỉ lạ
+  const next = (ctx.query.next || '').startsWith('/') ? ctx.query.next : null;
+  setHeader(next ? 'Đăng nhập' : 'Chào mừng',
+    iconButton(icons.back, 'Quay lại', () => navigate(next === '/cart' ? '/cart' : '/menu')));
   let mode = 'login';
   const formBox = h('div');
 
-  /** Đăng nhập xong: lưu phiên rồi về trang chủ theo vai trò. */
+  /**
+   * Đăng nhập xong: lưu phiên rồi quay lại màn khách đang làm dở (vd giỏ hàng để đặt món);
+   * nhân viên / quản trị luôn về trang chủ theo vai trò của mình.
+   */
   const finish = async (auth) => {
     await session.signIn(auth);
     toast(`Xin chào, ${auth.user.fullName}!`, 'success');
-    navigate('/');
+    navigate(auth.user.role === 'CUSTOMER' && next ? next : '/');
   };
+
+  // Lý do phải đăng nhập (khi khách bị chuyển tới từ màn khác)
+  const reason = !next ? null
+    : next === '/cart' ? 'Đăng nhập hoặc tạo tài khoản để đặt món. Giỏ hàng của bạn vẫn được giữ nguyên.'
+      : next === '/chat' ? 'Đăng nhập để trò chuyện với Trợ lý AI.'
+        : 'Bạn cần đăng nhập để xem mục này.';
 
   const drawForm = () => {
     const fields = mode === 'login' ? LOGIN_FIELDS : REGISTER_FIELDS;
@@ -87,7 +102,11 @@ export function render() {
     h('div', { class: 'auth-hero' }, h('img', { src: 'img/hero-1.jpg', alt: 'Ly cà phê espresso đang được rót' })),
     h('div', { class: 'card auth-card stack' },
       h('div', null, h('h1', null, 'AICF Coffee'), h('p', { class: 'muted' }, 'Đặt món nhanh, theo dõi đơn và hỏi Trợ lý AI.')),
+      reason ? h('div', { class: 'banner banner-info', role: 'status' }, reason) : null,
       modeSwitch, formBox, google),
+    next === '/cart'
+      ? h('a', { class: 'btn btn-ghost', href: '#/cart' }, '← Quay lại giỏ hàng')
+      : h('a', { class: 'btn btn-ghost', href: '#/menu' }, '← Xem thực đơn không cần đăng nhập'),
     IS_NATIVE ? serverSettings() : null,
     h('p', { class: 'muted small', style: { textAlign: 'center' } },
       'Tài khoản thử: khach / khach123 · staff / staff123 · admin / admin123'));

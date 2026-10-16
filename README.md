@@ -65,6 +65,8 @@ Lần đầu Maven tải thư viện mất 1–3 phút. Khi thấy `Started Mobi
 | <http://localhost:8090/swagger-ui.html> | **Tài liệu REST API** tự sinh, gọi thử từng API (bấm *Authorize*, dán token) |
 | `backend/data/aicf-mobile.db` | **File SQLite** – mở bằng [DB Browser for SQLite](https://sqlitebrowser.org/) để xem bảng |
 
+**Khách không cần tài khoản để xem:** mở app là vào thẳng *Thực đơn*, tìm món, thêm vào giỏ. Chỉ khi bấm *Đặt món* (hoặc mở *Đơn hàng*, *Trợ lý AI*) app mới mời đăng nhập / đăng ký, xong tự quay lại giỏ hàng với món còn nguyên. Đơn hàng cần gắn với tài khoản để khách theo dõi đơn, nhận thông báo, tự hủy đơn và để quán chống đơn ảo.
+
 Tài khoản mẫu (tạo tự động lần đầu):
 
 | Tên đăng nhập | Mật khẩu | Vai trò | Vào app thấy |
@@ -77,8 +79,8 @@ Tài khoản mẫu (tạo tự động lần đầu):
 (Muốn cài PWA lên màn hình chính và nhận Web Push cần HTTPS; với `localhost` trên máy tính thì Chrome cho phép sẵn.)
 
 ### Kịch bản demo gợi ý
-1. Đăng nhập `khach` → tìm "latte", lọc danh mục → thêm món vào giỏ → **tắt hẳn app rồi mở lại: giỏ vẫn còn** (SQLite/LocalDb).
-2. Giỏ hàng → chọn bàn, ghi chú "ít đá" → *Đặt món* → màn chi tiết đơn có thanh tiến trình.
+1. **Chưa đăng nhập**: mở app → tìm "latte", lọc danh mục → thêm món vào giỏ → **tắt hẳn app rồi mở lại: giỏ vẫn còn** (SQLite/LocalDb).
+2. Giỏ hàng → *Đăng nhập để đặt món* → đăng nhập `khach / khach123` → app quay lại giỏ → chọn bàn, ghi chú "ít đá" → *Đặt món* → màn chi tiết đơn có thanh tiến trình.
 3. Mở cửa sổ ẩn danh, đăng nhập `staff` → *Đơn cần làm* → *Nhận đơn → Bắt đầu pha → Đã xong*.
 4. Quay lại cửa sổ khách: trạng thái tự cập nhật, chấm đỏ ở *Tài khoản → Thông báo* (có Firebase thì nhận thêm thông báo đẩy).
 5. *Trợ lý AI*: khách hỏi "Gợi ý cho mình 1 món", "Đơn của tôi tới đâu rồi?"; admin hỏi "Doanh thu hôm nay?".
@@ -171,7 +173,7 @@ Controller (web)  →  Service  →  Repository  →  Entity  ⇄  SQLite
 | Lệnh | Kiểm tra |
 |---|---|
 | `cd backend && run.cmd test` | 6 bài kiểm thử tích hợp (JUnit + MockMvc trên SQLite thật): bảo mật, luồng đơn hàng đầy đủ, luật trạng thái, ràng buộc dữ liệu, CRUD, chat |
-| `cd frontend && node tests/e2e.mjs http://localhost:8090` | 34 bước kiểm thử giao diện trên Chrome ẩn (cỡ màn hình điện thoại), chụp ảnh từng màn vào `tests/ket-qua/` – dùng làm hình minh họa báo cáo |
+| `cd frontend && node tests/e2e.mjs http://localhost:8090` | 40 bước kiểm thử giao diện trên Chrome ẩn (cỡ màn hình điện thoại), chụp ảnh từng màn vào `tests/ket-qua/` – dùng làm hình minh họa báo cáo |
 
 ---
 

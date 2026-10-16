@@ -2,10 +2,13 @@
  * MÀN HÌNH GIỎ HÀNG & ĐẶT ĐƠN.
  * Giỏ lưu trong máy (SQLite / LocalDb). Bấm "Đặt món" -> POST /api/orders với id món + số lượng;
  * máy chủ tự lấy giá thật và tính tổng (không tin giá trên máy).
+ * Khách CHƯA đăng nhập vẫn xem / sửa giỏ được; bấm "Đặt món" thì app chuyển sang Đăng nhập (?next=/cart),
+ * đăng nhập xong quay lại đây với giỏ còn nguyên rồi bấm đặt.
  */
 import { h } from '../core/dom.js';
 import { money, PAYMENT_LABEL } from '../core/format.js';
 import { navigate } from '../core/router.js';
+import { appState } from '../core/store.js';
 import { cart } from '../data/cart.js';
 import { orderRepo, tableRepo } from '../data/repositories.js';
 import { asyncView, emptyState, setHeader, toast, toastError } from '../ui/components.js';
@@ -65,7 +68,8 @@ function draw({ items, tables }, reload) {
     Object.entries(PAYMENT_LABEL).map(([v, l]) => h('option', { value: v }, l)));
   const note = h('textarea', { class: 'input', id: 'order-note', name: 'note', placeholder: 'Ghi chú cho quán (không bắt buộc)', maxlength: 500 });
 
-  const submit = h('button', { class: 'btn btn-block', type: 'submit' }, 'Đặt món');
+  const guest = !appState.get().user;
+  const submit = h('button', { class: 'btn btn-block', type: 'submit' }, guest ? 'Đăng nhập để đặt món' : 'Đặt món');
   const form = h('form', { class: 'stack', novalidate: true },
     typeSwitch, tableField,
     h('div', { class: 'field' }, h('label', { for: 'payment' }, 'Thanh toán'), payment),
@@ -76,6 +80,11 @@ function draw({ items, tables }, reload) {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (guest) {
+      // Đơn hàng phải gắn với 1 tài khoản (để theo dõi, nhận thông báo, tự hủy) -> mời đăng nhập rồi quay lại
+      navigate('/login?next=/cart');
+      return;
+    }
     const orderType = form.elements.orderType.value;
     if (orderType === 'DINE_IN' && !tableSelect.value) {
       toast('Vui lòng chọn bàn', 'error');

@@ -79,7 +79,7 @@ export function render(ctx) {
     await firebaseSignOut();
     await localDb.cartClear();
     await session.signOut();
-    navigate('/login');
+    navigate('/menu'); // về thực đơn ở chế độ khách vãng lai
   };
 
   return h('div', { class: 'stack' },

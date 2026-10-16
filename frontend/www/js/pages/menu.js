@@ -2,6 +2,7 @@
  * MÀN HÌNH THỰC ĐƠN: lời chào, tìm kiếm, lọc theo danh mục, lưới món, thêm vào giỏ.
  * Dữ liệu: GET /api/categories + GET /api/products (mất mạng thì dùng bản sao trong SQLite / LocalDb).
  * Lọc và tìm làm ngay trên máy (thực đơn nhỏ) nên gõ tới đâu lọc tới đó, không phải gọi lại máy chủ.
+ * KHÔNG cần đăng nhập: khách vãng lai xem món và thêm vào giỏ thoải mái, chỉ phải đăng nhập lúc bấm "Đặt món".
  */
 import { h, mount } from '../core/dom.js';
 import { money } from '../core/format.js';
@@ -14,7 +15,8 @@ import { icons } from '../ui/icons.js';
 export function render(ctx) {
   setHeader(appState.get().shop?.name || 'Thực đơn');
   const user = appState.get().user;
-  const canOrder = user.role === 'CUSTOMER';
+  // Khách (đã hoặc chưa đăng nhập) được thêm món vào giỏ; nhân viên / quản trị chỉ xem thực đơn
+  const canOrder = !user || user.role === 'CUSTOMER';
   let category = ctx.query.category ? Number(ctx.query.category) : null;
   let keyword = '';
 
@@ -68,7 +70,7 @@ export function render(ctx) {
     h('div', { class: 'shop-hero' },
       h('div', { class: 'grow' },
         h('p', { class: 'greet' }, greeting() + ','),
-        h('h2', null, user.fullName)),
+        h('h2', null, user ? user.fullName : 'Mời bạn chọn món')),
       appState.get().shop?.hours ? h('span', { class: 'tag' }, '🕒 ' + appState.get().shop.hours) : null),
     view, fab);
 }

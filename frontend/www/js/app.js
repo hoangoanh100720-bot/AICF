@@ -24,11 +24,13 @@ import { icons } from './ui/icons.js';
 
 /* ------------------------------ Khai báo màn hình ------------------------------ */
 
+// auth: true = phải đăng nhập. Khách VÃNG LAI (chưa đăng nhập) vẫn xem thực đơn và dùng giỏ hàng;
+// tới lúc đặt món / xem đơn / chat thì app mới đưa sang màn Đăng nhập, xong quay lại đúng chỗ (?next=...).
 const STAFF = ['STAFF', 'ADMIN'];
 const routes = [
   { path: '/login', load: () => import('./pages/login.js'), guestOnly: true, noTabs: true },
-  { path: '/menu', load: () => import('./pages/menu.js'), auth: true, tab: 'menu' },
-  { path: '/cart', load: () => import('./pages/cart.js'), auth: true, tab: 'cart' },
+  { path: '/menu', load: () => import('./pages/menu.js'), tab: 'menu' },
+  { path: '/cart', load: () => import('./pages/cart.js'), tab: 'cart' },
   { path: '/orders', load: () => import('./pages/orders.js'), auth: true, tab: 'orders' },
   { path: '/orders/:id', load: () => import('./pages/orders.js'), export: 'renderDetail', auth: true, tab: 'orders' },
   { path: '/chat', load: () => import('./pages/chat.js'), auth: true, tab: 'chat' },
@@ -41,11 +43,18 @@ const routes = [
   { path: '/admin/settings', load: () => import('./pages/admin-settings.js'), auth: true, roles: ['ADMIN'], tab: 'profile' },
 ];
 
-/** Trang chủ theo vai trò. */
-const homeFor = (user) => (!user ? '/login' : user.role === 'ADMIN' ? '/admin' : user.role === 'STAFF' ? '/board' : '/menu');
+/** Trang chủ theo vai trò. Chưa đăng nhập: vào thẳng Thực đơn. */
+const homeFor = (user) => (!user ? '/menu' : user.role === 'ADMIN' ? '/admin' : user.role === 'STAFF' ? '/board' : '/menu');
 
 /** Thanh tab dưới theo vai trò: [khóa, đường dẫn, nhãn, biểu tượng, tên trường đếm huy hiệu]. */
 const TABS = {
+  // Khách vãng lai: thấy thực đơn + giỏ ngay; Trợ lý AI và Đăng nhập sẽ dẫn tới màn đăng nhập
+  GUEST: [
+    ['menu', '/menu', 'Thực đơn', icons.menu],
+    ['cart', '/cart', 'Giỏ hàng', icons.cart, 'cartCount'],
+    ['chat', '/chat', 'Trợ lý AI', icons.chat],
+    ['login', '/login', 'Đăng nhập', icons.user],
+  ],
   CUSTOMER: [
     ['menu', '/menu', 'Thực đơn', icons.menu],
     ['cart', '/cart', 'Giỏ hàng', icons.cart, 'cartCount'],
@@ -69,17 +78,18 @@ const TABS = {
 };
 
 let currentTab = null;
+let currentNoTabs = false; // màn hiện tại có ẩn thanh tab không (vd màn Đăng nhập)
 const tabbar = document.getElementById('tabbar');
 const main = document.getElementById('view');
 
 /** Vẽ lại thanh tab (gọi khi đổi màn hình / đổi người dùng / đổi số huy hiệu). */
-function renderTabs(hidden) {
-  const { user } = appState.get();
-  tabbar.hidden = hidden || !user;
+function renderTabs() {
+  const state = appState.get();
+  tabbar.hidden = currentNoTabs;
   main.classList.toggle('no-tabs', tabbar.hidden);
   if (tabbar.hidden) return;
-  const state = appState.get();
-  mount(tabbar, (TABS[user.role] || TABS.CUSTOMER).map(([key, path, label, icon, countKey]) => {
+  const tabs = state.user ? (TABS[state.user.role] || TABS.CUSTOMER) : TABS.GUEST;
+  mount(tabbar, tabs.map(([key, path, label, icon, countKey]) => {
     const count = countKey ? state[countKey] : 0;
     return h('a', { class: 'tab', href: '#' + path, 'aria-current': key === currentTab ? 'page' : null },
       h('span', { html: icon, style: { display: 'contents' } }),
@@ -97,7 +107,8 @@ const router = new Router({
   homeFor,
   onChange: (route) => {
     currentTab = route.tab || null;
-    renderTabs(route.noTabs);
+    currentNoTabs = !!route.noTabs;
+    renderTabs();
   },
   renderError: (err) => errorState(err, () => router.resolve()),
 });
@@ -119,7 +130,7 @@ async function start() {
   // Đổi người dùng / số giỏ / số chưa đọc -> vẽ lại tab
   let lastUser = appState.get().user;
   appState.subscribe((s) => {
-    renderTabs(tabbar.hidden && !s.user);
+    renderTabs();
     if (s.user !== lastUser) {
       lastUser = s.user;
       if (s.user) refreshUnread();
