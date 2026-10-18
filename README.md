@@ -42,6 +42,7 @@ AICF-DoAn/
 │   ├── capacitor.config.json
 │   └── package.json
 └── docs/
+    ├── flows.md                 sơ đồ luồng hoạt động các chức năng (Mermaid)
     ├── database.md              mô tả cơ sở dữ liệu (ERD, từng bảng)
     └── api.md                   danh sách REST API + ví dụ
 ```
@@ -186,4 +187,4 @@ Controller (web)  →  Service  →  Repository  →  Entity  ⇄  SQLite
 | Frontend | HTML5, CSS (design token, chế độ tối tự động), JavaScript ES Modules, Service Worker, Web App Manifest, Firebase JS SDK 10 |
 | Di động | Capacitor 8 (Android), @capacitor-community/sqlite, @capacitor/push-notifications |
 
-Tài liệu chi tiết: [docs/database.md](docs/database.md) · [docs/api.md](docs/api.md)
+Tài liệu chi tiết: [docs/flows.md](docs/flows.md) (sơ đồ luồng hoạt động) · [docs/database.md](docs/database.md) · [docs/api.md](docs/api.md)
