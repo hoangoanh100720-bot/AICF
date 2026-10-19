@@ -112,7 +112,10 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- ===== Swagger UI: tài liệu REST API tự sinh, thử API ngay trên trình duyệt (/swagger-ui.html) ===== -->
+        <!-- ===== Swagger UI: tài liệu REST API tự sinh, thử API ngay trên trình duyệt (/swagger-ui.html) =====
+             Thư viện này chạy BÊN TRONG máy chủ: đọc các Controller để biết có API nào rồi tự sinh trang tài liệu.
+             Không phải chương trình riêng; bỏ đi thì API vẫn chạy, chỉ mất trang tài liệu.
+             Cấu hình thêm ở application.yml (mục springdoc) và config/OpenApiConfig.java. -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>

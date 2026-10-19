@@ -23,8 +23,15 @@ import vn.aicf.mobile.web.dto.AuthDtos.RegisterRequest;
  *   POST /api/auth/firebase   đăng nhập Google (Firebase)    -> 200 + token | 401 | 503
  * </pre>
  * Controller chỉ nhận request, kiểm tra dữ liệu (@Valid) rồi giao cho Service - không chứa nghiệp vụ.
+ *
+ * <p>Hai chú thích dành cho SWAGGER (chỉ ảnh hưởng trang tài liệu /swagger-ui.html, không đổi cách API chạy):
+ * <ul>
+ *   <li>{@code @Tag} đặt trên lớp: tên NHÓM chứa các API của controller này trên trang Swagger.</li>
+ *   <li>{@code @Operation(summary = ...)} đặt trên từng hàm: dòng mô tả hiện cạnh đường dẫn API.</li>
+ * </ul>
+ * Mọi controller khác dùng cùng cách này (xem giải thích đầy đủ ở config/OpenApiConfig.java).
  */
-@Tag(name = "01. Xác thực")
+@Tag(name = "01. Xác thực")   // Swagger: nhóm "01. Xác thực" (đánh số để các nhóm xếp đúng thứ tự)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -37,6 +44,8 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
+    // Swagger: dòng mô tả hiện cạnh "POST /api/auth/register"; thư viện tự đọc thêm kiểu dữ liệu
+    // RegisterRequest (các trường + điều kiện @NotBlank, @Size) để vẽ mẫu JSON cần gửi
     @Operation(summary = "Đăng ký tài khoản khách hàng (đăng ký xong trả luôn token)")
     public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
         return auth.register(request);

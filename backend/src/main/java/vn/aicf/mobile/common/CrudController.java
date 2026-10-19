@@ -39,6 +39,7 @@ public abstract class CrudController<REQ, RES> {
     /** Service CRUD mà controller này dùng. */
     protected abstract CrudService<?, REQ, RES> service();
 
+    // @Operation viết 1 lần ở lớp cha -> Swagger hiện cùng mô tả cho cả 3 nhóm Danh mục, Món, Bàn
     @GetMapping
     @Operation(summary = "Lấy danh sách (có thể lọc bằng tham số trên URL)")
     public List<RES> list(@RequestParam Map<String, String> filters) {

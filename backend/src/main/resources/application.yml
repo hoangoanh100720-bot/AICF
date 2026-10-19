@@ -59,12 +59,17 @@ spring:
       write-dates-as-timestamps: false
     time-zone: Asia/Ho_Chi_Minh
 
-# Swagger UI: http://localhost:8090/swagger-ui.html
+# ---------------------------------------------------------------------------
+# SWAGGER (thư viện springdoc) - trang tài liệu REST API tự sinh, chạy chung trong máy chủ này.
+#   http://localhost:8090/swagger-ui.html   trang web liệt kê + gọi thử mọi API
+#   http://localhost:8090/v3/api-docs       bản mô tả API dạng JSON (chuẩn OpenAPI 3)
+# Giải thích đầy đủ: config/OpenApiConfig.java
+# ---------------------------------------------------------------------------
 springdoc:
   swagger-ui:
-    path: /swagger-ui.html
-    operations-sorter: method
-    tags-sorter: alpha
+    path: /swagger-ui.html       # địa chỉ mở trang (tự chuyển sang /swagger-ui/index.html)
+    operations-sorter: method    # trong 1 nhóm: xếp API theo phương thức (DELETE, GET, PATCH, POST, PUT)
+    tags-sorter: alpha           # xếp các nhóm (@Tag) theo chữ cái -> nên tên nhóm đánh số 01, 02... 10
 
 # =============================================================================
 # CẤU HÌNH RIÊNG CỦA ỨNG DỤNG (đọc qua lớp AppProperties)

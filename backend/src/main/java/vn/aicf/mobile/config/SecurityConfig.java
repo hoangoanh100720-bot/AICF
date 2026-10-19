@@ -67,7 +67,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/me", "/api/users/me/**").authenticated()
                         .requestMatchers("/api/stats/**", "/api/settings/**", "/api/users/**").hasRole("ADMIN")
                         .requestMatchers("/api/**").authenticated()
-                        // Giao diện PWA, ảnh, Swagger UI...
+                        // Mọi đường dẫn ngoài /api: giao diện PWA, ảnh, và trang Swagger
+                        // (/swagger-ui.html, /swagger-ui/**, /v3/api-docs) -> mở tự do. Trang Swagger chỉ là tài liệu;
+                        // khi bấm "Try it out" gọi vào /api/** thì vẫn phải qua đúng các luật quyền ở trên.
                         .anyRequest().permitAll())
                 // Trả lỗi 401 / 403 dạng JSON giống mọi lỗi khác (mặc định Spring trả trang HTML)
                 .exceptionHandling(e -> e
