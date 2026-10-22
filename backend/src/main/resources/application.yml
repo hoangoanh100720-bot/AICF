@@ -21,10 +21,14 @@ spring:
   # Tham số trên URL là PRAGMA của SQLite:
   #   foreign_keys=true   bật kiểm tra khóa ngoại (SQLite mặc định TẮT)
   #   journal_mode=WAL    cho phép vừa đọc vừa ghi cùng lúc, nhanh hơn
-  #   busy_timeout=5000   đang có người ghi thì chờ tối đa 5 giây thay vì báo lỗi ngay
+  #   busy_timeout=15000  đang có người ghi thì chờ tối đa 15 giây thay vì báo lỗi ngay
+  #   transaction_mode=IMMEDIATE  mỗi giao dịch giành quyền GHI ngay từ lúc bắt đầu.
+  #       Mặc định (DEFERRED) giao dịch đọc trước rồi mới xin quyền ghi; khi nhiều khách đặt đơn cùng lúc,
+  #       SQLite báo SQLITE_BUSY / SQLITE_BUSY_SNAPSHOT NGAY (không chờ busy_timeout) -> lỗi 500.
+  #       IMMEDIATE làm các giao dịch xếp hàng lần lượt, nên cũng chống được 2 nhân viên cùng sửa 1 đơn.
   # ---------------------------------------------------------------------------
   datasource:
-    url: jdbc:sqlite:${app.data-dir}/aicf-mobile.db?foreign_keys=true&journal_mode=WAL&busy_timeout=5000
+    url: jdbc:sqlite:${app.data-dir}/aicf-mobile.db?foreign_keys=true&journal_mode=WAL&busy_timeout=15000&transaction_mode=IMMEDIATE
     driver-class-name: org.sqlite.JDBC
     hikari:
       # SQLite chỉ cho 1 luồng ghi tại 1 thời điểm -> giữ ít kết nối là đủ
